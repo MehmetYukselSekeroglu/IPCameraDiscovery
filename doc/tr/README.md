@@ -1,4 +1,4 @@
-![Logo](img/logo.webp)
+![Logo](../../img/logo.webp)
 
 # IPCameraDiscovery
 
@@ -66,5 +66,5 @@ python hikvision_login_checker.py --file filtered_cameras.txt
 - `doc/en/README.md`: İngilizce README dosyası.
 ## Lisans
 
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+Bu proje [MIT Lisansı](../../LICENSE) ile lisanslanmıştır.
 

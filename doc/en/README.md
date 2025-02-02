@@ -1,5 +1,5 @@
  // Start Generation Here
-![Logo](img/logo.webp)
+![Logo](../../img/logo.webp)
 
 # IPCameraDiscovery
 
@@ -68,4 +68,4 @@ python hikvision_login_checker.py --file filtered_cameras.txt
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](../../LICENSE).
