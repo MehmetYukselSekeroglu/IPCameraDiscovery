@@ -1,0 +1,8 @@
+argparse
+requests
+beautifulsoup4
+colorama
+urllib3
+selenium
+tqdm
+ipaddress
