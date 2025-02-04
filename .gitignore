@@ -2,3 +2,9 @@ found_raw_cameras.txt
 scan_list.txt
 found_raw_cameras_filtered.txt
 found_cameras.txt
+live_streams.txt
+rtsp_streams.txt
+scan_list.txt
+general_subnet_discovery.py
+temp/
+temp*

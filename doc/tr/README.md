@@ -11,6 +11,8 @@ IPCameraDiscovery, ağınızdaki IP kameraları tespit etmek ve özellikle Hikvi
 - **Otomatik Kimlik Doğrulama**: Varsayılan kullanıcı adı ve şifre kombinasyonları ile kameralara otomatik giriş denemeleri.
 - **Sonuçların Filtrelenmesi**: Bulunan kameraların sonuçlarını filtreleyerek kayıt altına alır.
 - **Renkli Konsol Çıktıları**: Kolay okunabilirlik için renkli konsol çıktıları kullanır.
+- **RTSP ve HTTP Stream Tespiti**: Yaygın IP kamera portları üzerinden RTSP ve HTTP stream'leri otomatik tespit eder.
+- **Çoklu Üretici Desteği**: Hikvision, Dahua, Axis, Mobotix, Vivotek, Panasonic, Sony, Bosch, Arecont ve Geovision gibi birçok üreticinin kameralarını destekler.
 
 ## Kurulum
 
@@ -57,6 +59,7 @@ python hikvision_login_checker.py --file filtered_cameras.txt
 ## Proje Yapısı
 
 - `general_ip_camera_finder.py`: Genel IP kamera tarama işlemleri.
+- `scan_subnet_detect_live_streams.py`: RTSP ve HTTP stream'leri otomatik tespit eder.
 - `scan_subnet_find_hikvision_cameras.py`: Özellikle Hikvision kameraları taramak için.
 - `raw_filter.py`: Ham tarama sonuçlarını filtrelemek için.
 - `hikvision_login_checker.py`: Bulunan Hikvision kameralarına otomatik giriş denemeleri yapmak için.

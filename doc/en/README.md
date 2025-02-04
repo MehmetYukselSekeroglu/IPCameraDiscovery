@@ -12,7 +12,8 @@ IPCameraDiscovery is a Python-based tool developed to detect IP cameras on your 
 - **Automatic Authentication**: Attempts automatic logins to cameras using default username and password combinations.
 - **Result Filtering**: Filters and records the results of found cameras.
 - **Colored Console Outputs**: Uses colored console outputs for easy readability.
-
+- **RTSP and HTTP Stream Detection**: Detects RTSP and HTTP streams.
+- **Multi-Manufacturer Support**: Supports a wide range of camera manufacturers including Hikvision, Dahua, Axis, Mobotix, Vivotek, Panasonic, Sony, Bosch, Arecont, and Geovision.
 ## Installation
 
 1. **Python Installation**: The tool works with Python version 3.6 or higher. You can download Python from [python.org](https://www.python.org/downloads/).
@@ -59,6 +60,7 @@ python hikvision_login_checker.py --file filtered_cameras.txt
 
 - `general_ip_camera_finder.py`: General IP camera scanning operations.
 - `scan_subnet_find_hikvision_cameras.py`: Specifically scans for Hikvision cameras.
+- `scan_subnet_detect_live_streams.py`: Detects RTSP and HTTP streams.
 - `raw_filter.py`: Filters raw scanning results.
 - `hikvision_login_checker.py`: Attempts automatic logins to found Hikvision cameras.
 - `requirements.txt`: List of required Python packages.
