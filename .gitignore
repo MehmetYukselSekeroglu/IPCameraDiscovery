@@ -8,3 +8,7 @@ scan_list.txt
 general_subnet_discovery.py
 temp/
 temp*
+*.txt
+haikon_rtsp_search.py
+hikvision_scanner_test.py
+test.py

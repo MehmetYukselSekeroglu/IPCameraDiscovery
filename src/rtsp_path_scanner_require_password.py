@@ -31,95 +31,120 @@ RTSP_PORTS = [554, 8554, 10554]
 
 # RTSP URL patterns
 RTSP_PATTERNS = [
-    "rtsp://{ip}:{port}/live/ch00_0",
-    "rtsp://{ip}:{port}/live/ch01_0",
-    "rtsp://{ip}:{port}/live",
-    "rtsp://{ip}:{port}/1",
-    "rtsp://{ip}:{port}/live/main",
-    "rtsp://{ip}:{port}/live/sub",
-    "rtsp://{ip}:{port}/11",
-    "rtsp://{ip}:{port}/12",
-    "rtsp://{ip}:{port}/media/video1",
-    "rtsp://{ip}:{port}/media/video2",
-    "rtsp://{ip}:{port}/profile1",
-    "rtsp://{ip}:{port}/profile2",
-    "rtsp://{ip}:{port}/stream1",
-    "rtsp://{ip}:{port}/stream2",
-    "rtsp://{ip}:{port}/live",
-    
     # ONVIF
     "rtsp://{ip}:{port}/onvif/device_service",
     "rtsp://{ip}:{port}/onvif/media",
     "rtsp://{ip}:{port}/onvif/live",
+    "rtsp://{ip}:{port}/onvif/profile",
     
     # ONVIF H264
     "rtsp://{ip}:{port}/h264_ulaw.sdp",
     "rtsp://{ip}:{port}/h264.sdp",
+    "rtsp://{ip}:{port}/h264",
+    "rtsp://{ip}:{port}/h264/media.amp",
     
     # General RTSP patterns
-
+    "rtsp://{ip}:{port}/live",
+    "rtsp://{ip}:{port}/1",
+    "rtsp://{ip}:{port}/2", 
+    "rtsp://{ip}:{port}/live/ch00_0",
+    "rtsp://{ip}:{port}/live/ch01_0",
+    "rtsp://{ip}:{port}/live/ch02_0",
+    "rtsp://{ip}:{port}/live/main",
+    "rtsp://{ip}:{port}/live/sub",
+    "rtsp://{ip}:{port}/live/mobile",
+    "rtsp://{ip}:{port}/11",
+    "rtsp://{ip}:{port}/12",
+    "rtsp://{ip}:{port}/13",
+    "rtsp://{ip}:{port}/media/video1",
+    "rtsp://{ip}:{port}/media/video2",
+    "rtsp://{ip}:{port}/media/video3",
+    "rtsp://{ip}:{port}/profile1",
+    "rtsp://{ip}:{port}/profile2", 
+    "rtsp://{ip}:{port}/profile3",
+    "rtsp://{ip}:{port}/stream1",
+    "rtsp://{ip}:{port}/stream2",
+    "rtsp://{ip}:{port}/stream3",
+    
     # Hikvision
     "rtsp://{ip}:{port}/Streaming/Channels/101",
     "rtsp://{ip}:{port}/Streaming/Channels/102",
+    "rtsp://{ip}:{port}/Streaming/Channels/103",
+    "rtsp://{ip}:{port}/Streaming/Channels/201",
+    "rtsp://{ip}:{port}/Streaming/Channels/202",
     "rtsp://{ip}:{port}/h264/ch1/main/av_stream",
     "rtsp://{ip}:{port}/h264/ch1/sub/av_stream",
+    "rtsp://{ip}:{port}/h264/ch2/main/av_stream",
+    "rtsp://{ip}:{port}/h264/ch2/sub/av_stream",
     
     # Dahua
     "rtsp://{ip}:{port}/cam/realmonitor?channel=1&subtype=0",
     "rtsp://{ip}:{port}/cam/realmonitor?channel=1&subtype=1",
+    "rtsp://{ip}:{port}/cam/realmonitor?channel=2&subtype=0",
+    "rtsp://{ip}:{port}/cam/realmonitor?channel=2&subtype=1",
     "rtsp://{ip}:{port}/video1",
     "rtsp://{ip}:{port}/video2",
+    "rtsp://{ip}:{port}/video3",
     
     # Axis
     "rtsp://{ip}:{port}/axis-media/media.amp",
     "rtsp://{ip}:{port}/mpeg4/media.amp",
     "rtsp://{ip}:{port}/axis-media/media.3gp",
+    "rtsp://{ip}:{port}/axis-media/media.mp4",
     
     # Vivotek
     "rtsp://{ip}:{port}/live.sdp",
     "rtsp://{ip}:{port}/live1.sdp",
     "rtsp://{ip}:{port}/live2.sdp",
+    "rtsp://{ip}:{port}/live3.sdp",
     "rtsp://{ip}:{port}/rtsp_tunnel",
+    "rtsp://{ip}:{port}/video.3gp",
     
     # Bosch
     "rtsp://{ip}:{port}/rtsp_tunnel",
     "rtsp://{ip}:{port}/video1",
     "rtsp://{ip}:{port}/video2",
+    "rtsp://{ip}:{port}/video3",
     "rtsp://{ip}:{port}/h264",
+    "rtsp://{ip}:{port}/h264/stream1",
     
     # Panasonic
     "rtsp://{ip}:{port}/MediaInput/h264",
-    "rtsp://{ip}:{port}/nphMpeg4/nil-640x480"
+    "rtsp://{ip}:{port}/MediaInput/mpeg4",
+    "rtsp://{ip}:{port}/nphMpeg4/nil-640x480",
+    "rtsp://{ip}:{port}/nphMpeg4/nil-320x240",
+    
+    # Samsung
+    "rtsp://{ip}:{port}/profile1/media.smp",
+    "rtsp://{ip}:{port}/profile2/media.smp",
+    "rtsp://{ip}:{port}/profile3/media.smp",
+    
+    # Sony
+    "rtsp://{ip}:{port}/video1",
+    "rtsp://{ip}:{port}/video2",
+    "rtsp://{ip}:{port}/video3",
+    
+    # Mobotix
+    "rtsp://{ip}:{port}/mobotix",
+    "rtsp://{ip}:{port}/mobotix/stream",
+    
+    # ACTi
+    "rtsp://{ip}:{port}/track1",
+    "rtsp://{ip}:{port}/track2",
+    "rtsp://{ip}:{port}/mpeg4/media.amp",
+    
+    # Arecont
+    "rtsp://{ip}:{port}/h264",
+    "rtsp://{ip}:{port}/mjpeg",
+    
+    # Pelco
+    "rtsp://{ip}:{port}/stream1",
+    "rtsp://{ip}:{port}/stream2",
+    "rtsp://{ip}:{port}/stream3"
 ]
 
-# Common auth combinations
-AUTH_COMBINATIONS = [
-    ('admin', 'admin'),
-    ('admin', ''),
-    ('admin', '12345'),
-    ('admin', 'password'),
-    ('root', 'root'),
-    ('admin', '123456'),
-    ('admin', '12345678'),
-    ('admin', '12345789'),
-    ('admin', '12345890'),
-    ('admin', '888888'),
-    ('admin', '9999'),
-    ('admin', 'camera'),
-    ('admin', '1234'),
-    ('admin', 'system'),
-    ('admin', 'admin12345'),
-    ('admin', 'Admin12345'),
-    ('admin', 'hikvision'),
-    ('admin', 'hik12345'),
-    ('888888', '888888'),
-    ('admin', 'dahua'),
-    ('admin', 'dh123456'),
-    ('root', 'pass'),
-    ('admin', 'axis2023'),
-    ('root', 'axis'),
-    ('admin', 'axis123')
-]
+# Common usernames to try
+USERNAMES = ['admin', 'root', '888888']
 
 # Global variables
 total_ips = 0
@@ -143,11 +168,10 @@ def write_to_file(filename, content):
     except Exception as e:
         print(f"File writing error: {str(e)}")
 
-def verify_rtsp_stream_socket(url, auth=None):
+def verify_rtsp_stream_socket(url, username, password):
     """Verify RTSP stream using socket connection"""
     try:
-        if auth:
-            url = url.replace("rtsp://", f"rtsp://{auth[0]}:{auth[1]}@")
+        url = url.replace("rtsp://", f"rtsp://{username}:{password}@")
         
         # Parse URL
         url = url.replace("rtsp://", "")
@@ -171,11 +195,10 @@ def verify_rtsp_stream_socket(url, auth=None):
     except:
         return False
 
-def verify_rtsp_stream_opencv(url, auth=None):
+def verify_rtsp_stream_opencv(url, username, password):
     """Verify RTSP stream using OpenCV"""
     try:
-        if auth:
-            url = url.replace("rtsp://", f"rtsp://{auth[0]}:{auth[1]}@")
+        url = url.replace("rtsp://", f"rtsp://{username}:{password}@")
         
         cap = cv2.VideoCapture(url)
         cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
@@ -190,7 +213,7 @@ def verify_rtsp_stream_opencv(url, auth=None):
     except:
         return False
 
-def check_rtsp(ip, port, pattern):
+def check_rtsp(ip, port, pattern, password):
     try:
         with socket_semaphore:
             url = pattern.format(ip=ip, port=port)
@@ -203,26 +226,20 @@ def check_rtsp(ip, port, pattern):
                 with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_AUTH_WORKERS) as auth_executor:
                     auth_futures = []
                     
-                    # Try without auth first
-                    auth_futures.append(auth_executor.submit(verify_rtsp_stream_socket, url, None))
-                    
-                    # Then try auth combinations
-                    for auth in AUTH_COMBINATIONS:
-                        auth_futures.append(auth_executor.submit(verify_rtsp_stream_socket, url, auth))
+                    # Try each username with provided password
+                    for username in USERNAMES:
+                        auth_futures.append(auth_executor.submit(verify_rtsp_stream_socket, url, username, password))
                     
                     # Check results
-                    for future in concurrent.futures.as_completed(auth_futures):
+                    for future, username in zip(concurrent.futures.as_completed(auth_futures), USERNAMES):
                         try:
                             result = future.result()
                             if result:
                                 # Socket connection successful, verify with OpenCV
-                                auth_idx = auth_futures.index(future) - 1
-                                auth = None if auth_idx < 0 else AUTH_COMBINATIONS[auth_idx]
-                                
-                                if verify_rtsp_stream_opencv(url, auth):
+                                if verify_rtsp_stream_opencv(url, username, password):
                                     if url not in found_streams:
                                         found_streams.add(url)
-                                        auth_str = f" (Auth: {auth[0]}:{auth[1]})" if auth else ""
+                                        auth_str = f" (Auth: {username}:{password})"
                                         print(colorama.Fore.GREEN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
                                               f"Verified RTSP stream found: {url}{auth_str}" + colorama.Fore.RESET)
                                         write_to_file("rtsp_streams.txt", f"{url}{auth_str}")
@@ -245,7 +262,7 @@ def check_port(ip, port):
     except:
         return False
 
-def scan_ip(ip):
+def scan_ip(ip, password):
     global scanned_ips
     
     try:
@@ -268,12 +285,13 @@ def scan_ip(ip):
                 for port in open_ports:
                     # Check patterns in parallel for each port
                     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pattern_executor:
-                        pattern_futures = []
-                        for pattern in RTSP_PATTERNS:
-                            future = pattern_executor.submit(check_rtsp, ip, port, pattern)
-                            pattern_futures.append(future)
-                            
-                            # Check if stream found
+                        pattern_futures = [
+                            pattern_executor.submit(check_rtsp, ip, port, pattern, password)
+                            for pattern in RTSP_PATTERNS
+                        ]
+                        
+                        # Wait for first successful result or all to complete
+                        for future in concurrent.futures.as_completed(pattern_futures):
                             try:
                                 if future.result():
                                     # Stream found, stop checking other patterns
@@ -293,11 +311,11 @@ def scan_ip(ip):
     except Exception as e:
         print(f"IP scan error {ip}: {str(e)}")
 
-def worker():
+def worker(password):
     while True:
         try:
             ip = ip_queue.get_nowait()
-            scan_ip(ip)
+            scan_ip(ip, password)
             ip_queue.task_done()
         except Empty:
             break
@@ -305,7 +323,7 @@ def worker():
             print(f"Worker error: {str(e)}")
             continue
 
-def scan_from_file(filename):
+def scan_from_file(filename, password):
     global total_ips
     try:
         with open(filename, 'r') as f:
@@ -317,7 +335,7 @@ def scan_from_file(filename):
             
         # Start worker threads
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            futures = [executor.submit(worker) for _ in range(min(MAX_WORKERS, len(ips)))]
+            futures = [executor.submit(worker, password) for _ in range(min(MAX_WORKERS, len(ips)))]
             concurrent.futures.wait(futures)
             
     except Exception as e:
@@ -332,6 +350,7 @@ def main():
     group.add_argument('--ip', help='Single IP to scan')
     group.add_argument('--file', help='File containing IPs to scan (one per line)')
     parser.add_argument('--threads', type=int, default=MAX_WORKERS, help='Thread count')
+    parser.add_argument('--password', required=True, help='Password to try')
     args = parser.parse_args()
 
     try:
@@ -348,18 +367,18 @@ def main():
 
             # Start worker threads
             with concurrent.futures.ThreadPoolExecutor(max_workers=args.threads) as executor:
-                futures = [executor.submit(worker) for _ in range(min(args.threads, total_ips))]
+                futures = [executor.submit(worker, args.password) for _ in range(min(args.threads, total_ips))]
                 concurrent.futures.wait(futures)
                 
         elif args.ip:
             print(colorama.Fore.CYAN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
                   f"Starting scan of IP {args.ip}" + colorama.Fore.RESET)
-            scan_ip(args.ip)
+            scan_ip(args.ip, args.password)
             
         else:  # args.file
             print(colorama.Fore.CYAN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
                   f"Starting scan of IPs from file {args.file}" + colorama.Fore.RESET)
-            scan_from_file(args.file)
+            scan_from_file(args.file, args.password)
 
         print("\n" + colorama.Fore.CYAN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
               f"Scan completed. RTSP streams saved to rtsp_streams.txt" + colorama.Fore.RESET)
