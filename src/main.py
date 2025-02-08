@@ -1,6 +1,6 @@
 from lib.identify import CAMERA_IDENTIFIERS,identify_camera
 import colorama
-from lib.bruteforce import check_http_auth__SANETRON,check_http_auth__HAIKON,check_http_auth__Hikvision
+from lib.bruteforce import check_http_auth__SANETRON,check_http_auth__HAIKON,check_http_auth__Hikvision,check_http_auth__Longse
 import argparse
 import sys
 import ipaddress
@@ -27,7 +27,7 @@ scan_lock = threading.Lock()
 socket_semaphore = threading.Semaphore(100)
 
 def print_banner() -> None:
-    print(colorama.Fore.YELLOW + """                                  
+    banner = """                                  
                                ▒██                       ███        █ 
  ██████                ▓██▓    █░  █     █                 █        █ 
  █                    ▒█  █▒   █   █░ █ ░█                 █        █ 
@@ -41,8 +41,8 @@ def print_banner() -> None:
          ▒█                                                           
          █▒                                                           
         ██                                                            
-          """)
-    print(colorama.Fore.RESET)
+    """
+    print(colorama.Fore.YELLOW + banner + colorama.Fore.RESET)
 
 def write_to_file(file_name:str,content:str) -> None:
     with open(file_name,"a") as file:
@@ -51,12 +51,10 @@ def write_to_file(file_name:str,content:str) -> None:
 def check_port(ip: str, port: int) -> bool:
     try:
         with socket_semaphore:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex((str(ip), port))
-            sock.close()
-            return result == 0
-    except:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(DEFAULT_TIMEOUT)
+                return sock.connect_ex((str(ip), port)) == 0
+    except Exception as e:
         return False
 
 def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:    
@@ -75,8 +73,8 @@ def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:
                             verify=False
                         )
                         if req.ok:
-                            print(colorama.Fore.GREEN + 
-                                  f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Open Port Found: {url}" + 
+                            print(colorama.Fore.CYAN + 
+                                  f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Path Found: {ip}:{port} -> {url}" + 
                                   colorama.Fore.RESET)
                             active_ports.append({
                                 "port": port,
@@ -107,38 +105,20 @@ def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:
                   f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {port_data['full_url']} - {camera_type}" + 
                   colorama.Fore.RESET)
 
-            # Handle different camera types
-            if camera_type == "hikvision_red_login_page":
-                auth_func = None
-                output_msg = "Testing Credentials"
-            # Try default credentials based on camera type
-            elif camera_type == "dahura_xvr_login_page":
-                auth_func = None
-                output_msg = "Testing Credentials"
-            elif camera_type == "hikvision_default_login_page":
-                auth_func = check_http_auth__Hikvision
-                output_msg = "Testing Credentials"                
-                
-            elif camera_type == "hikvision_haikon_login_page":
-                auth_func = check_http_auth__HAIKON
-                output_msg = "Testing Credentials"
+            # Kamera tipine göre işlem yap
+            auth_funcs = {
+                "hikvision_red_login_page": None,
+                "dahura_xvr_login_page": None, 
+                "hikvision_default_login_page": check_http_auth__Hikvision,
+                "hikvision_haikon_login_page": check_http_auth__HAIKON,
+                "sanetron_login_page": check_http_auth__SANETRON,
+                "longse_login_page": check_http_auth__Longse
+            }
 
-            elif camera_type == "sanetron_login_page":
-                auth_func = check_http_auth__SANETRON
-                output_msg = "Testing Credentials"
-            else:
-                print(colorama.Fore.RED + 
-                      f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {port_data['full_url']} - " +
-                      f"{camera_type} | NOT SUPPORTED CAMERA TYPE" + colorama.Fore.RESET)
-                continue
-            
+            auth_func = auth_funcs.get(camera_type)
             if auth_func is None:
                 continue
 
-            
-            print(colorama.Fore.CYAN + 
-                  f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {port_data['full_url']} - " +
-                  f"{camera_type} | {output_msg}" + colorama.Fore.RESET)
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=SUB_THREAD_COUNT) as executor:
                 futures = [

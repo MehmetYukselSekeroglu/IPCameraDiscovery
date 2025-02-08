@@ -11,7 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 DEFAULT_TIMEOUT = 2
-DEFAULT_WAIT_TIME = 30
+DEFAULT_WAIT_TIME = 45
 
 
 def check_http_auth__SANETRON(ip, port, username, password, thread_lock:threading.Lock, write_to_file:callable) -> None:
@@ -83,7 +83,7 @@ def check_http_auth__HAIKON(ip:str, port:any, username:str, password:str, thread
         
         try:
             driver.get(url)
-            
+            time.sleep(4)
             # Find and fill username field
             username_field = driver.find_element(By.ID, "UserName")
             username_field.send_keys(username)
@@ -145,6 +145,7 @@ def check_http_auth__Hikvision(ip:str, port:any, username:str, password:str, thr
         
         try:
             driver.get(url)
+            time.sleep(4)
             
             # Find and fill username field
             username_field = driver.find_element(By.ID, "username")
@@ -187,3 +188,75 @@ def check_http_auth__Hikvision(ip:str, port:any, username:str, password:str, thr
     except Exception as e:
         pass
     return False
+
+
+
+
+
+def check_http_auth__Longse(ip:str, port:any, username:str, password:str, thread_lock:threading.Lock, write_to_file:callable) -> bool:
+    try:
+        url = f"http://{ip}:{port}/"
+        
+        # Configure Chrome options for headless mode and security
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--disable-extensions')
+        chrome_options.add_argument('--disable-download-notification')
+        chrome_options.add_argument('--safebrowsing-disable-download-protection')
+        
+        # Disable file downloads
+        prefs = {
+            "download.default_directory": "/dev/null",
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        
+        # Initialize webdriver with configured options
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_page_load_timeout(DEFAULT_WAIT_TIME)
+        
+        try:
+            driver.get(url)
+            time.sleep(15)
+            
+
+            # Find and fill username field
+            username_field = driver.find_element(By.ID, "userName")
+            username_field.send_keys(username)
+            
+            # Find and fill password field  
+            password_field = driver.find_element(By.ID, "pwd")
+            password_field.send_keys(password)
+            
+            # Click login button
+            login_button = driver.find_element(By.CSS_SELECTOR, ".logining-btn")
+            login_button.click()
+            
+            # Wait for redirect or error
+            time.sleep(1)
+            
+            target_text = driver.find_elements(By.CSS_SELECTOR, ".alert-content")
+            
+            if "error" in target_text[0].text.lower().strip() or "failed" in target_text[0].text.lower().strip() or "invalid" in target_text[0].text.lower().strip() or "wrong" in target_text[0].text.lower().strip():
+                return False            
+            else:   
+                with thread_lock:
+                    print(colorama.Fore.GREEN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
+                          f"Valid credentials found - {url} (User: {username}, Pass: {password})" + colorama.Fore.RESET)
+                    write_to_file("found_devices.txt", f"{url}|{username}|{password}")
+                return True
+                
+        finally:
+            driver.quit()
+    except Exception as e:
+        pass
+    return False
+
+
+
+

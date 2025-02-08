@@ -13,7 +13,9 @@ CAMERA_IDENTIFIERS = {
         "default_credentials":[
             {"username": "admin", "password": "admin"},
             {"username": "admin", "password": "123456"},
-            {"username": "admin", "password": "888888"}
+            {"username": "admin", "password": "1234"},
+            {"username": "admin", "password": "12345"},
+            {"username": "admin", "password": "admin123"},
         ],
         "css_selector": ".loginbg"
     },
@@ -22,7 +24,7 @@ CAMERA_IDENTIFIERS = {
             {"username": "admin", "password": "admin"},
             {"username": "admin", "password": "123456"},
             {"username": "admin", "password": "12345"},
-            {"username": "admin", "password": "hikvision"},
+            {"username": "admin", "password": "1234"},
             {"username": "admin", "password": "admin123"},
         ],
         "css_selector": ".login-part",
@@ -30,16 +32,20 @@ CAMERA_IDENTIFIERS = {
     "hikvision_haikon_login_page":{
         "default_credentials":[
             {"username": "admin", "password": "admin"},
+            {"username": "admin", "password": "123456"},
+            {"username": "admin", "password": "1234"},
             {"username": "admin", "password": "12345"},
-            {"username": "admin", "password": "888888"}
+            {"username": "admin", "password": "admin123"},
         ],  
         "css_selector": ".loginbar",
     },
     "sanetron_login_page":{
         "default_credentials":[
             {"username": "admin", "password": "admin"},
+            {"username": "admin", "password": "123456"},
+            {"username": "admin", "password": "1234"},
             {"username": "admin", "password": "12345"},
-            {"username": "admin", "password": "888888"}
+            {"username": "admin", "password": "admin123"},
         ],
         "css_selector": ".loginingtip",
     },
@@ -47,17 +53,31 @@ CAMERA_IDENTIFIERS = {
         "default_credentials":[
             {"username": "admin", "password": "admin"},
             {"username": "admin", "password": "123456"},
-            {"username": "admin", "password": "888888"}
+            {"username": "admin", "password": "1234"},
+            {"username": "admin", "password": "12345"},
+            {"username": "admin", "password": "admin123"},
         ],
         "css_selector": "#image-1010-img",
     },
     "oinone_login_page":{
         "default_credentials":[
             {"username": "admin", "password": "admin"},
+            {"username": "admin", "password": "123456"},
+            {"username": "admin", "password": "1234"},
             {"username": "admin", "password": "12345"},
-            {"username": "admin", "password": "888888"}
+            {"username": "admin", "password": "admin123"},
         ],
         "css_selector": "#content",
+    },
+    "longse_login_page":{
+        "default_credentials":[
+            {"username": "admin", "password": "admin"},
+            {"username": "admin", "password": "123456"},
+            {"username": "admin", "password": "1234"},
+            {"username": "admin", "password": "12345"},
+            {"username": "admin", "password": "admin123"},
+        ],
+        "css_selector": ".login-frame",
     }
 }
 
