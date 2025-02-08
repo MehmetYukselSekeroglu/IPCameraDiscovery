@@ -1,73 +1,98 @@
 ![Logo](../../img/logo.webp)
 
-# IPCameraDiscovery
+## Giriş
 
-IPCameraDiscovery, ağınızdaki IP kameraları tespit etmek ve özellikle Hikvision cihazlarının varlığını belirlemek için geliştirilmiş bir Python tabanlı araçtır. Bu araç, subnet taraması yaparak potansiyel kameraları bulur, kimlik doğrulama kontrolleri gerçekleştirir ve sonuçları filtreler.
+**IPCameraDiscovery**, IP tabanlı güvenlik kameralarını tespit etmek, port durumlarını kontrol etmek ve varsayılan kimlik bilgileriyle giriş denemeleri gerçekleştirmek için geliştirilmiş kapsamılı bir aracıdır. 
+
+Bu proje; ağ taraması, port analizi, kamera tanımlama ve bruteforce gibi test senaryolarını bir araya getirerek, siber güvenlik uzmanları ve pen-test çalışmaları yapan geliştiricilere hızlı ve etkili bir çözüm sunar. 
+
+Bu doküman, projenin temel işleyiş prensiplerini, dosya yapısını ve nasıl kullanılacağını detaylı şekilde açıklamaktadır.
+
+---
 
 ## Özellikler
 
-- **Subnet Tarama**: Belirtilen IP aralıklarında otomatik olarak cihazları tarar.
-- **Hikvision Cihaz Tespiti**: Özellikle Hikvision marka IP kameraları belirlemek için gelişmiş kontrol mekanizmaları.
-- **Otomatik Kimlik Doğrulama**: Varsayılan kullanıcı adı ve şifre kombinasyonları ile kameralara otomatik giriş denemeleri.
-- **Sonuçların Filtrelenmesi**: Bulunan kameraların sonuçlarını filtreleyerek kayıt altına alır.
-- **Renkli Konsol Çıktıları**: Kolay okunabilirlik için renkli konsol çıktıları kullanır.
-- **RTSP ve HTTP Stream Tespiti**: Yaygın IP kamera portları üzerinden RTSP ve HTTP stream'leri otomatik tespit eder.
-- **Çoklu Üretici Desteği**: Hikvision, Dahua, Axis, Mobotix, Vivotek, Panasonic, Sony, Bosch, Arecont ve Geovision gibi birçok üreticinin kameralarını destekler.
+### 🔎 IP Tarama ve Port Kontrolü
+- Tek bir IP, bir alt ağ veya dosya içindeki IP adreslerini tarar.
+- Aktif cihazları ve bunların açık portlarını belirler.
+- HTTP portlarına istek göndererek yanıt içeriğini analiz eder.
 
-## Kurulum
+### 👁 Kamera Modeli Tanımlama
+- `lib/identify.py` içerisindeki CSS seçiciler ile kamera modelini algılar.
+- Hikvision, HAIKON, Sanetron, Longse gibi yaygın markaları tanıyabilir.
+- Kamera modeline özel bruteforce denemeleri için gözlem yapar.
 
-1. **Python Kurulumu**: Araç Python 3.6 veya üzeri sürümlerle çalışmaktadır. Python'u [python.org](https://www.python.org/downloads/) adresinden indirebilirsiniz.
+### ⚡ Bruteforce Saldırıları
+- `lib/bruteforce.py` içinde bulunan fonksiyonlarla, varsayılan oturum açma bilgileriyle giriş testleri yapar.
+- Kamera modeline uygun belirlenmiş kimlik bilgilerini dener.
+- Başarılı oturumları `found_devices.txt` dosyasına kaydeder.
 
-2. **Gerekli Paketlerin Yüklenmesi**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+### 🛠 Headless Tarayıcı Kullanımı
+- Selenium WebDriver yardımıyla otomatik giriş testleri yapar.
+- Tarayıcıyı görünmez (headless) modda çalıştırır.
 
-3. **WebDriver Kurulumu**:
-    Araç, Selenium kullanarak tarama yapmaktadır. **Chromedriver** yüklemeniz gerekmektedir. [Chromedriver İndir](https://sites.google.com/chromium.org/driver/) sayfasından işletim sisteminize uygun sürümü indirip, sistem PATH'ine ekleyin.
+### ⚙ Paralel İşlem (Multi-threading)
+- `threading` ve `concurrent.futures` kullanarak ağ taramalarını hızlandırır.
+- Geniş IP aralıklarında verimli çalışmayı sağlar.
 
-## Kullanım
-
-### Genel IP Kamera Keşif Aracı
-
-Subnet taraması yapmak için:
-```bash
-python general_ip_camera_finder.py --target 192.168.1.0/24
-```
-
-### Hikvision Kamera Tarama
-
-Hikvision özelinde tarama yapmak için:
-```bash
-python scan_subnet_find_hikvision_cameras.py --ip 192.168.1.0/24 --max_workers 50
-```
-
-### Ham Verilerin Filtrelenmesi
-
-Bulunan kameraların ham verilerini filtrelemek için:
-```bash
-python raw_filter.py --input found_cameras.txt --output filtered_cameras.txt
-```
-
-### Hikvision Giriş Kontrolü
-
-Bulunan Hikvision kameraların giriş kontrolünü yapmak için:
-```bash
-python hikvision_login_checker.py --file filtered_cameras.txt
-```
+---
 
 ## Proje Yapısı
 
-- `general_ip_camera_finder.py`: Genel IP kamera tarama işlemleri.
-- `scan_subnet_detect_live_streams.py`: RTSP ve HTTP stream'leri otomatik tespit eder.
-- `scan_subnet_find_hikvision_cameras.py`: Özellikle Hikvision kameraları taramak için.
-- `raw_filter.py`: Ham tarama sonuçlarını filtrelemek için.
-- `hikvision_login_checker.py`: Bulunan Hikvision kameralarına otomatik giriş denemeleri yapmak için.
-- `requirements.txt`: Gerekli Python paket listesi.
-- `img/logo.webp`: Proje logosu.
-- `doc/tr/README.md`: Türkçe README dosyası.
-- `doc/en/README.md`: İngilizce README dosyası.
-## Lisans
+- **main.py** → Ana yürütücü betik. Tarama ve bruteforce işlerini sırasıyla gerçekleştirir.
+- **lib/identify.py** → Kamera modelini HTTP yanıtlarından tespit eder.
+- **lib/bruteforce.py** → Farklı kameralar için oturum açma denemelerini yönetir.
+- **lib/env.py** → Portlar, URL yolları gibi sabitleri tanımlar.
+- **lib/user_agent_tools.py** → HTTP istekleri için rastgele User-Agent seçimi yapar.
 
-Bu proje [MIT Lisansı](../../LICENSE) ile lisanslanmıştır.
+---
 
+## Kullanım
+
+### 👀 Tek IP Taraması
+```sh
+python main.py --ip 192.168.1.100 --threads 10
+```
+
+### 🌍 Alt Ağ Taraması
+```sh
+python main.py --subnet 192.168.1.0/24 --threads 10
+```
+
+### 📃 Dosya Üzerinden Taraması
+```sh
+python main.py --file ip_list.txt --threads 10
+```
+
+---
+
+## İşleyiş Prensibi
+
+1. **IP Tarama ve Port Kontrolü**: Ağdaki cihazlar belirlenir, açık portlar taranır.
+2. **Kamera Tanımlama**: HTTP yanıtlarından model bilgisi çıkarılır.
+3. **Bruteforce Denemeleri**: Tespit edilen modele uygun giriş testleri uygulanır.
+4. **Sonuç Kayıtları**: Başarılı bulunan kimlik bilgileri kaydedilir.
+
+---
+
+## Gereksinimler ve Kurulum
+
+- **Python Sürümü**: Python 3.x
+- **Gerekli Paketler:**
+  ```sh
+  pip install requests selenium beautifulsoup4 colorama
+  ```
+- **Ek Gereksinimler:**
+  - Selenium için uygun WebDriver (ChromeDriver, GeckoDriver vb.) sisteminizde bulunmalıdır.
+
+---
+
+## ⚠️ Güvenlik Uyarısı
+
+Bu aracı yalnızca yetkili erişim iznine sahip sistemlerde test amaçlı kullanın. Yetkisiz erişim yasal sorumluluklar doğurabilir. Tüm kullanım sorumluluğu size aittir.
+
+---
+
+## 🌟 Lisans ve Katkı
+
+Bu proje MIT lisansı altında sunulmaktadır.

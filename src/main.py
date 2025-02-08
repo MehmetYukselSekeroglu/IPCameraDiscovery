@@ -1,11 +1,17 @@
-from lib.identify import CAMERA_IDENTIFIERS,identify_camera
+from lib.identify import CAMERA_IDENTIFIERS
+from lib.identify import identify_camera
 import colorama
-from lib.bruteforce import check_http_auth__SANETRON,check_http_auth__HAIKON,check_http_auth__Hikvision,check_http_auth__Longse
+from lib.bruteforce import check_http_auth__SANETRON
+from lib.bruteforce import check_http_auth__HAIKON
+from lib.bruteforce import check_http_auth__Hikvision
+from lib.bruteforce import check_http_auth__Longse
 import argparse
 import sys
 import ipaddress
 from datetime import datetime
-from lib.env import DEFAULT_PORTS,SUB_THREAD_COUNT,URL_PATHS
+from lib.env import DEFAULT_PORTS
+from lib.env import SUB_THREAD_COUNT
+from lib.env import URL_PATHS
 from lib.user_agent_tools import randomUserAgent
 import requests
 import concurrent.futures
@@ -15,9 +21,10 @@ import bs4
 import socket
 import urllib3
 
+# disable ssl warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) 
 
-
+# GLOBAL VARIABLES
 DEFAULT_TIMEOUT = 2
 FILE_LOCK = threading.Lock()
 ip_queue = Queue()
@@ -26,6 +33,7 @@ scanned_ips = 0
 scan_lock = threading.Lock()
 socket_semaphore = threading.Semaphore(100)
 
+# print banner
 def print_banner() -> None:
     banner = """                                  
                                ▒██                       ███        █ 
@@ -44,10 +52,12 @@ def print_banner() -> None:
     """
     print(colorama.Fore.YELLOW + banner + colorama.Fore.RESET)
 
+# thread safe file write
 def write_to_file(file_name:str,content:str) -> None:
     with open(file_name,"a") as file:
         file.write(f"{content}\n")
 
+# check if port is open
 def check_port(ip: str, port: int) -> bool:
     try:
         with socket_semaphore:
@@ -57,6 +67,7 @@ def check_port(ip: str, port: int) -> bool:
     except Exception as e:
         return False
 
+# worker function
 def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:    
     try:
         # Find active ports and collect responses
@@ -153,6 +164,7 @@ def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:
               f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [ERROR] {e}" + 
               colorama.Fore.RESET)
 
+# queue worker
 def queue_worker(threads:int, timeout:int, verbose:bool):
     while True:
         try:
@@ -165,11 +177,13 @@ def queue_worker(threads:int, timeout:int, verbose:bool):
             print(f"Worker error: {str(e)}")
             continue
 
+# scan single ip
 def scan_single_ip(ip:str,threads:int,timeout:int,verbose:bool) -> None:
     global total_ips
     total_ips = 1
     worker(ip, threads, timeout, verbose)
 
+# scan subnet
 def scan_subnet(subnet:str,threads:int,timeout:int,verbose:bool) -> None:
     global total_ips
     try:
@@ -192,6 +206,7 @@ def scan_subnet(subnet:str,threads:int,timeout:int,verbose:bool) -> None:
     except Exception as e:
         print(colorama.Fore.RED + f"Subnet scan error: {str(e)}" + colorama.Fore.RESET)
 
+# scan file
 def scan_file(file:str,threads:int,timeout:int,verbose:bool) -> None:
     global total_ips
     try:
@@ -214,6 +229,7 @@ def scan_file(file:str,threads:int,timeout:int,verbose:bool) -> None:
     except Exception as e:
         print(colorama.Fore.RED + f"File scan error: {str(e)}" + colorama.Fore.RESET)
 
+# main function
 def main() -> None:
     print_banner()
     parser = argparse.ArgumentParser(description="Camera Bruteforcer")
@@ -221,7 +237,7 @@ def main() -> None:
     parser.add_argument("--subnet", type=str, help="Subnet to scan")
     parser.add_argument("--file", type=str, help="File containing IP addresses")
     parser.add_argument("--threads", type=int, default=10, help="Number of threads to use")
-    parser.add_argument("--timeout", type=int, default=2, help="Timeout for requests")
+    parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="Timeout for requests")
     parser.add_argument("--verbose", action="store_true", help="Verbose output")
     
     args = parser.parse_args()
