@@ -10,6 +10,7 @@ import logging
 import resource
 from queue import Queue, Empty
 import concurrent.futures
+from urllib.parse import urlparse
 
 # Increase system limits for open files
 soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -29,96 +30,32 @@ colorama.init()
 # RTSP ports
 RTSP_PORTS = [554, 8554, 10554]
 
-# RTSP URL patterns
+# RTSP URL patterns (top 10)
 RTSP_PATTERNS = [
     "rtsp://{ip}:{port}/live/ch00_0",
     "rtsp://{ip}:{port}/live/ch01_0",
-    "rtsp://{ip}:{port}/live",
     "rtsp://{ip}:{port}/1",
     "rtsp://{ip}:{port}/live/main",
     "rtsp://{ip}:{port}/live/sub",
     "rtsp://{ip}:{port}/11",
     "rtsp://{ip}:{port}/12",
-    "rtsp://{ip}:{port}/media/video1",
-    "rtsp://{ip}:{port}/media/video2",
-    "rtsp://{ip}:{port}/profile1",
-    "rtsp://{ip}:{port}/profile2",
-    "rtsp://{ip}:{port}/stream1",
-    "rtsp://{ip}:{port}/stream2",
-    "rtsp://{ip}:{port}/live",
-    
-    # ONVIF
-    "rtsp://{ip}:{port}/onvif/device_service",
-    "rtsp://{ip}:{port}/onvif/media",
-    "rtsp://{ip}:{port}/onvif/live",
-    
-    # ONVIF H264
     "rtsp://{ip}:{port}/h264_ulaw.sdp",
     "rtsp://{ip}:{port}/h264.sdp",
-    
-    # General RTSP patterns
-
-    # Hikvision
     "rtsp://{ip}:{port}/Streaming/Channels/101",
-    "rtsp://{ip}:{port}/Streaming/Channels/102",
-    "rtsp://{ip}:{port}/h264/ch1/main/av_stream",
-    "rtsp://{ip}:{port}/h264/ch1/sub/av_stream",
-    
-    # Dahua
-    "rtsp://{ip}:{port}/cam/realmonitor?channel=1&subtype=0",
-    "rtsp://{ip}:{port}/cam/realmonitor?channel=1&subtype=1",
-    "rtsp://{ip}:{port}/video1",
-    "rtsp://{ip}:{port}/video2",
-    
-    # Axis
-    "rtsp://{ip}:{port}/axis-media/media.amp",
-    "rtsp://{ip}:{port}/mpeg4/media.amp",
-    "rtsp://{ip}:{port}/axis-media/media.3gp",
-    
-    # Vivotek
-    "rtsp://{ip}:{port}/live.sdp",
-    "rtsp://{ip}:{port}/live1.sdp",
-    "rtsp://{ip}:{port}/live2.sdp",
-    "rtsp://{ip}:{port}/rtsp_tunnel",
-    
-    # Bosch
-    "rtsp://{ip}:{port}/rtsp_tunnel",
-    "rtsp://{ip}:{port}/video1",
-    "rtsp://{ip}:{port}/video2",
-    "rtsp://{ip}:{port}/h264",
-    
-    # Panasonic
-    "rtsp://{ip}:{port}/MediaInput/h264",
-    "rtsp://{ip}:{port}/nphMpeg4/nil-640x480"
+    "rtsp://{ip}:{port}/                    ",
 ]
 
-# Common auth combinations
+# Common auth combinations (top 5)
 AUTH_COMBINATIONS = [
     ('admin', 'admin'),
     ('admin', ''),
     ('admin', '12345'),
-    ('admin', 'password'),
-    ('root', 'root'),
     ('admin', '123456'),
+    ('admin', '1234567'),
     ('admin', '12345678'),
-    ('admin', '12345789'),
-    ('admin', '12345890'),
-    ('admin', '888888'),
-    ('admin', '9999'),
-    ('admin', 'camera'),
-    ('admin', '1234'),
-    ('admin', 'system'),
-    ('admin', 'admin12345'),
-    ('admin', 'Admin12345'),
-    ('admin', 'hikvision'),
-    ('admin', 'hik12345'),
-    ('888888', '888888'),
-    ('admin', 'dahua'),
-    ('admin', 'dh123456'),
-    ('root', 'pass'),
-    ('admin', 'axis2023'),
-    ('root', 'axis'),
-    ('admin', 'axis123')
+    ('admin', '123456789'),
+    ('admin', '1234567890'),
+    
 ]
 
 # Global variables
@@ -143,51 +80,57 @@ def write_to_file(filename, content):
     except Exception as e:
         print(f"File writing error: {str(e)}")
 
-def verify_rtsp_stream_socket(url, auth=None):
-    """Verify RTSP stream using socket connection"""
+def verify_rtsp_stream_rtsp(url, auth=None):
+    """RTSP stream doğrulamasını hızlı ve güvenilir şekilde gerçekleştirir."""
     try:
+        # Auth bilgisini URL'e ekle
         if auth:
             url = url.replace("rtsp://", f"rtsp://{auth[0]}:{auth[1]}@")
-        
-        # Parse URL
-        url = url.replace("rtsp://", "")
-        if "@" in url:
-            url = url.split("@")[1]
-        host = url.split("/")[0]
-        if ":" in host:
-            host, port = host.split(":")
-            port = int(port)
-        else:
-            port = 554
-            
-        # Try socket connection
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(2)
-        result = sock.connect_ex((host, port))
-        sock.close()
-        
-        return result == 0
-        
-    except:
-        return False
 
-def verify_rtsp_stream_opencv(url, auth=None):
-    """Verify RTSP stream using OpenCV"""
-    try:
-        if auth:
-            url = url.replace("rtsp://", f"rtsp://{auth[0]}:{auth[1]}@")
-        
-        cap = cv2.VideoCapture(url)
-        cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
-        cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
-        if not cap.isOpened():
-            return False
+        # URL parsing işlemini optimize et
+        parsed = urlparse(url)
+        host = parsed.hostname
+        port = parsed.port or 554
+
+        # Socket bağlantısını kur ve OPTIONS isteği gönder
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(3)
+            s.connect((host, port))
             
-        ret, frame = cap.read()
-        cap.release()
+            # İlk olarak OPTIONS isteği gönder
+            options_request = f"OPTIONS {url} RTSP/1.0\r\nCSeq: 1\r\n\r\n"
+            s.sendall(options_request.encode())
+            
+            options_response = s.recv(512).decode(errors='ignore')
+            
+            # OPTIONS yanıtını kontrol et
+            if "RTSP/1.0 200 OK" not in options_response:
+                return False
+
+            # DESCRIBE isteği gönder
+            describe_request = (
+                f"DESCRIBE {url} RTSP/1.0\r\n"
+                f"CSeq: 2\r\n"
+                f"Accept: application/sdp\r\n\r\n"
+            )
+            s.sendall(describe_request.encode())
+            
+            # DESCRIBE yanıtını al
+            describe_response = s.recv(1024).decode(errors='ignore')
+            
+            # Unauthorized durumunda false dön
+            if "401 Unauthorized" in describe_response:
+                return False
+                
+            # Başarılı DESCRIBE yanıtı ve SDP içeriği kontrol et
+            if ("RTSP/1.0 200 OK" in describe_response and 
+                "Content-Type: application/sdp" in describe_response and
+                "m=video" in describe_response):
+                return True
+                
+        return False
         
-        return ret and frame is not None and frame.size > 0
-    except:
+    except (socket.timeout, socket.error, Exception):
         return False
 
 def check_rtsp(ip, port, pattern):
@@ -204,29 +147,26 @@ def check_rtsp(ip, port, pattern):
                     auth_futures = []
                     
                     # Try without auth first
-                    auth_futures.append(auth_executor.submit(verify_rtsp_stream_socket, url, None))
+                    auth_futures.append(auth_executor.submit(verify_rtsp_stream_rtsp, url, None))
                     
                     # Then try auth combinations
                     for auth in AUTH_COMBINATIONS:
-                        auth_futures.append(auth_executor.submit(verify_rtsp_stream_socket, url, auth))
+                        auth_futures.append(auth_executor.submit(verify_rtsp_stream_rtsp, url, auth))
                     
                     # Check results
                     for future in concurrent.futures.as_completed(auth_futures):
                         try:
-                            result = future.result()
-                            if result:
-                                # Socket connection successful, verify with OpenCV
+                            if future.result():
                                 auth_idx = auth_futures.index(future) - 1
-                                auth = None if auth_idx < 0 else AUTH_COMBINATIONS[auth_idx]
+                                auth_used = None if auth_idx < 0 else AUTH_COMBINATIONS[auth_idx]
                                 
-                                if verify_rtsp_stream_opencv(url, auth):
-                                    if url not in found_streams:
-                                        found_streams.add(url)
-                                        auth_str = f" (Auth: {auth[0]}:{auth[1]})" if auth else ""
-                                        print(colorama.Fore.GREEN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
-                                              f"Verified RTSP stream found: {url}{auth_str}" + colorama.Fore.RESET)
-                                        write_to_file("rtsp_streams.txt", f"{url}{auth_str}")
-                                        return True
+                                if url not in found_streams:
+                                    found_streams.add(url)
+                                    auth_str = f" (Auth: {auth_used[0]}:{auth_used[1]})" if auth_used else ""
+                                    print(colorama.Fore.GREEN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
+                                          f"Verified RTSP stream found: {url}{auth_str}" + colorama.Fore.RESET)
+                                    write_to_file("rtsp_streams.txt", f"{url}{auth_str}")
+                                    return True
                         except Exception:
                             continue
     except Exception as e:
