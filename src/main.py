@@ -20,6 +20,10 @@ from queue import Queue, Empty
 import bs4
 import socket
 import urllib3
+from lib.env import APPLICATION_AUTHOR
+from lib.env import APPLICATION_VERSION
+from lib.env import APPLICATION_NAME
+
 
 # disable ssl warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) 
@@ -32,10 +36,11 @@ total_ips = 0
 scanned_ips = 0
 scan_lock = threading.Lock()
 socket_semaphore = threading.Semaphore(100)
+progress_lock = threading.Lock()
 
 # print banner
 def print_banner() -> None:
-    banner = """                                  
+    banner = f"""                                  
                                ▒██                       ███        █ 
  ██████                ▓██▓    █░  █     █                 █        █ 
  █                    ▒█  █▒   █   █░ █ ░█                 █        █ 
@@ -48,7 +53,11 @@ def print_banner() -> None:
  ██████  ▒█     ███▒   ▓██▓    █    █   █▒  ███    █       ▒██   ██▓█ 
          ▒█                                                           
          █▒                                                           
-        ██                                                            
+        ██                      
+
+[+] Author : {APPLICATION_AUTHOR}
+[+] Version: {APPLICATION_VERSION}
+[+] Name   : {APPLICATION_NAME}                    
     """
     print(colorama.Fore.YELLOW + banner + colorama.Fore.RESET)
 
@@ -97,9 +106,9 @@ def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:
 
             
         if not active_ports:
-            #print(colorama.Fore.RED + 
-            #      f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No active ports found for {ip}" + 
-            #      colorama.Fore.RESET)
+            print(colorama.Fore.RED + 
+                  f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No active ports found for {ip}" + 
+                  colorama.Fore.RESET)
             return
 
         # Process each active port
@@ -151,13 +160,13 @@ def worker(ip: str, threads: int, timeout: int, verbose: bool) -> None:
                         break
                     
         # Update progress
-        with scan_lock:
+        with progress_lock:
             global scanned_ips
             scanned_ips += 1
             if total_ips > 0:
                 progress = (scanned_ips / total_ips) * 100
                 print(colorama.Fore.CYAN + 
-                      f"\rScan progress: {progress:.2f}% ({scanned_ips}/{total_ips} IP)", end="")
+                      f"\rTarama ilerlemesi: %{progress:.2f} ({scanned_ips}/{total_ips} IP)", end="", flush=True)
             
     except Exception as e:
         print(colorama.Fore.RED + 
@@ -179,16 +188,18 @@ def queue_worker(threads:int, timeout:int, verbose:bool):
 
 # scan single ip
 def scan_single_ip(ip:str,threads:int,timeout:int,verbose:bool) -> None:
-    global total_ips
+    global total_ips, scanned_ips
     total_ips = 1
+    scanned_ips = 0
     worker(ip, threads, timeout, verbose)
 
 # scan subnet
 def scan_subnet(subnet:str,threads:int,timeout:int,verbose:bool) -> None:
-    global total_ips
+    global total_ips, scanned_ips
     try:
         network = ipaddress.ip_network(subnet)
         total_ips = network.num_addresses - 2  # Exclude network and broadcast addresses
+        scanned_ips = 0
         
         print(colorama.Fore.CYAN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
               f"Starting scan of {total_ips} IPs in subnet {subnet}" + colorama.Fore.RESET)
@@ -208,12 +219,13 @@ def scan_subnet(subnet:str,threads:int,timeout:int,verbose:bool) -> None:
 
 # scan file
 def scan_file(file:str,threads:int,timeout:int,verbose:bool) -> None:
-    global total_ips
+    global total_ips, scanned_ips
     try:
         with open(file, 'r') as f:
             ips = [line.strip() for line in f if line.strip()]
         
         total_ips = len(ips)
+        scanned_ips = 0
         print(colorama.Fore.CYAN + f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
               f"Starting scan of IPs from file {file}" + colorama.Fore.RESET)
 

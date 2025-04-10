@@ -1,5 +1,7 @@
 
-
+APPLICATION_AUTHOR = "Mehmet Yüksel Şekeroğlu"
+APPLICATION_VERSION = "1.0.0"
+APPLICATION_NAME = "Camera Identification Tool"
 
 DEFAULT_PORTS = [80,  # HTTP
                  443,  # HTTPS

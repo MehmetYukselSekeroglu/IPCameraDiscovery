@@ -84,6 +84,7 @@ CAMERA_IDENTIFIERS = {
 
 
 
+
 def identify_camera(response_text: str) -> str:
     soup = bs4.BeautifulSoup(response_text, "html.parser")
 
